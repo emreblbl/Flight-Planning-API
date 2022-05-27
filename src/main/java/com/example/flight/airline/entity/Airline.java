@@ -5,14 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 
 @Entity
 @Data
@@ -20,14 +19,13 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class Airline {
     @Id
-    @GeneratedValue(generator = Constant.UUID_STRATEGY)
-    @GenericGenerator(name = Constant.UUID_STRATEGY, strategy = Constant.UUID_STRATEGY)
+    @GeneratedValue
     @JsonIgnore
-    private String id;
+    private Long id;
     @NotNull(message = "airline name is mandotary")
     private String airlineName;
-    @Size(min = 2,max = 2,message = "IATA Code must be 2 characters.")
-    @NotNull(message = "airline code is mandotary")
+    @Size(min = 2,max = 2,message = Constant.AIRLINE_MANDATORY_MESSAGE)
+    @NotNull(message = Constant.AIRLINE_NAME_MANDATORY_MESSAGE)
     private String airlineCode;// IAATA standard
 
 
