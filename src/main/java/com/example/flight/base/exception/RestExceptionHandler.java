@@ -1,5 +1,7 @@
 package com.example.flight.base.exception;
 
+import com.example.flight.base.model.BaseResponseVO;
+import com.example.flight.base.util.ResponseHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -130,7 +132,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(apiError, apiError.getStatus());
+        return ResponseHelper.getSuccessResponse(apiError,apiError.getStatus());
     }
 
 }
