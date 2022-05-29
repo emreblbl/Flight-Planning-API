@@ -1,13 +1,26 @@
 # Flight-Planning-API
 
 Flight Project API is a REST service which enables making CRUD operations with data described below.
+There are three entities respectively described below :
+- Airline 
+- Airport
+- **Flight** <br/>
+
+#### Airline and airport module are just  created to make flight operations more realistic.
+#### Project aims to  fulfill appropriately flight crud operations as desired.
+
+
+### Libraries that are used in Project 
+- **Lombok** : it is used to replaces boilerplate code with easy-to-use annotations (Example : @Data(for creating automatically getter and setter for class)
+- **javax.validation** : it is used to validate user input that is like requested (Example : @Size(min=2,max=2) for restricting the object field or parameter as size.
+- **springfox(Swagger)** : it is used to syncronize the API documentation with the server and client at the same pace.
 
 ## Flight-Controller endpoints
 
 ### HTTP Post Call Flowchart
 ![Flowchart](./image/PostFlowchart.png)
 ### Create flight (Post method) 
- - Request (Application/JSON)
+ - **Request (Application/JSON)**
 ```
 {
   "airlineCode": "TA",
@@ -23,12 +36,12 @@ Flight Project API is a REST service which enables making CRUD operations with d
 - Bad Request Response :
 ![Swagger POST](./image/badRequest.png)
 
-- Response Code :404,EntityNotFoundException (application/json)
+- **Response Code :404,EntityNotFoundException** (application/json)
 ![Swagger POST](./image/404status.png)
 
-- Response Code :400, HttpMessageNotReadableException(application/json)<br />
+- **Response Code :400, HttpMessageNotReadableException**(application/json)<br />
   - When we send a request object with wrong LocalDate input
-  - Request :
+  - **Request** :
   ```
    {
   "airlineCode": "TB",
@@ -38,11 +51,11 @@ Flight Project API is a REST service which enables making CRUD operations with d
   "sourceAirportCode": "AHL"
    }
    ```
-  -  Response : 
+  -  **Response** : 
  ![Swagger POST](./image/404NotReadable.png)
- - Response Code :422,UNPROCESSABLE_ENTITY (application/json) 
+ - **Response Code :422,UNPROCESSABLE_ENTITY** (application/json) 
    - When we send a post flight request with date that already full for creating flight in airline between two destination
-   - Request :
+   - **Request** :
   ```
    {
    "airlineCode": "TA",
