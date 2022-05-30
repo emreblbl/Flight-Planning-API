@@ -6,7 +6,7 @@ There are three entities respectively described below :
 - Airport
 - **Flight** <br/>
 
-#### Airline and airport module are just  created to make flight operations more realistic.
+#### Airline and airport entities are just created to make flight operations more realistic.
 #### Project aims to  fulfill appropriately flight crud operations as desired.
 ### Swagger and H2 Embedded Database Interface URL :
 - http://localhost:8080/swagger-ui/#/
