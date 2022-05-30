@@ -1,12 +1,22 @@
 package com.example.flight.flight.service.Imp;
 
+import com.example.flight.airline.entity.Airline;
+import com.example.flight.airline.repository.IAirlineDao;
+import com.example.flight.airport.entity.Airport;
+import com.example.flight.airport.repository.IAirportDao;
+import com.example.flight.base.exception.DailyFlightAlreadyFullException;
+import com.example.flight.base.exception.EntityNotFoundException;
 import com.example.flight.base.model.BaseResponseVO;
 import com.example.flight.base.model.ServiceMessage;
 import com.example.flight.base.util.ResponseHelper;
 import com.example.flight.flight.entity.Flight;
-import com.example.flight.flight.model.FlightRequestVO;
+import com.example.flight.flight.model.request.FlightInsertRequestVO;
+import com.example.flight.flight.model.request.FlightUpdateRequestVO;
+import com.example.flight.flight.model.response.FlightResponseDto;
 import com.example.flight.flight.repository.IFlightDao;
 import com.example.flight.flight.service.IFlightService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,64 +29,104 @@ import java.util.Optional;
 @Service
 public class FlightService implements IFlightService {
     private final IFlightDao iFlightDao;
-    public FlightService(IFlightDao iFlightDao){
+    private final IAirlineDao iAirlineDao;
+    private final IAirportDao iAirportDao;
+    @Autowired
+    public FlightService(IAirportDao iAirportDao,IAirlineDao iAirlineDao,IFlightDao iFlightDao){
         this.iFlightDao = iFlightDao;
+        this.iAirlineDao = iAirlineDao;
+        this.iAirportDao =iAirportDao;
     }
     @Override
-    public ResponseEntity<BaseResponseVO> insertFlight(Flight flight) {
-        List<Flight> flightList = iFlightDao.customFindAllByDestCodeAndSourceCodeAndAirlineCode(flight.getDestinationAirportCode(),flight.getSourceAirportCode(),flight.getAirlineCode());
-        int flightCounter = checkFlightCountInADay(flight,flightList);
-        if(flightCounter<3){
+    public ResponseEntity<BaseResponseVO> insertFlight(FlightInsertRequestVO flightInsertRequestVO) {
+        Flight flight = FlightRequestBinder.convertRequestVOToEntity(flightInsertRequestVO);
+        checkAirlineAndAirport(
+                flight.getAirlineCode()
+                ,flight.getSourceAirportCode()
+                ,flight.getDestinationAirportCode());
+        List<Flight> flightList = iFlightDao.customFindAllByDestCodeAndSourceCodeAndAirlineCode(
+                flight.getDestinationAirportCode()
+                ,flight.getSourceAirportCode()
+                ,flight.getAirlineCode()
+                ,flight.getFlightDate());
+        if(flightList.size()<3){
             flight = iFlightDao.save(flight);
             if(flight.getId()!=null){
-                return ResponseHelper.getSuccessResponse(flight, ServiceMessage.INSERT_SUCCESS);
+                FlightResponseDto flightResponseDto= FlightRequestBinder.convertToDto(flight);
+                return ResponseHelper.getSuccessResponse(flightResponseDto, ServiceMessage.INSERT_SUCCESS);
 
             }else{
-                return ResponseHelper.getSuccessResponse("??",ServiceMessage.INSERT_FAILED);
+                throw new DataIntegrityViolationException("Something wrong with persistance layer when writing/updating into database.");
             }
 
         }else{
-            return ResponseHelper.getSuccessResponse("There must be daily at most 3 ﬂights for an airline between 2 destinations.",ServiceMessage.INSERT_FAILED);
+            throw  new DailyFlightAlreadyFullException( flight.getFlightDate()
+                    ,flight.getAirlineCode()
+                    ,flight.getSourceAirportCode()
+                    ,flight.getDestinationAirportCode());
         }
-
     }
-    private int checkFlightCountInADay(Flight flight,List<Flight> flightList){
-        int flightCounter=0;
-        for(int i =0;i<flightList.size();i++){
-            if(flightList.get(i).getFlightDate().compareTo(flight.getFlightDate())==0){
-                flightCounter++;
-            }
+    private void checkAirlineAndAirport(String airlineCode, String sourceAirportCode, String destinationAirportCode){
+        if(!iAirlineDao.existsByAirlineCode(airlineCode)){
+            throw new EntityNotFoundException(Airline.class,"airlineCode",airlineCode);
         }
-        return flightCounter;
+        ArrayList<String> airportCodeList = new ArrayList<>();
+        airportCodeList.add(sourceAirportCode);
+        airportCodeList.add(destinationAirportCode);
+        List<Airport> airportList = iAirportDao.findAirportByAirportCode(airportCodeList);
+        if(airportList.size() !=2){
+            throw new EntityNotFoundException(Airport.class,"airportCode",sourceAirportCode.concat(" or "+destinationAirportCode));
+        }
     }
 
     @Override
-    public ResponseEntity<BaseResponseVO> updateFlight(FlightRequestVO flightRequestVO) {
-        Optional<Flight> flightOptional = iFlightDao.findById(flightRequestVO.getId());
+    public ResponseEntity<BaseResponseVO> updateFlight(FlightUpdateRequestVO flightUpdateRequestVO) {
+        Optional<Flight> flightOptional = iFlightDao.findById(flightUpdateRequestVO.getId());
         Flight flight = flightOptional.isPresent() == true ? flightOptional.get() :null;
         if(flight !=null){
-            FlightServiceUtil.changeFlightBasedOnFlightRequestVO(flightRequestVO,flight);
+            FlightRequestBinder.setFlightRequestVOOnEntity(flightUpdateRequestVO,flight);
         }else{
-            return ResponseHelper.getSuccessResponse("??",ServiceMessage.UPDATE_FAILED);
+            throw new EntityNotFoundException(Flight.class,"flight Id",flightUpdateRequestVO.getId().toString());
         }
-        List<Flight> flightList = iFlightDao.customFindAllByDestCodeAndSourceCodeAndAirlineCode(flight.getDestinationAirportCode(),flight.getSourceAirportCode(),flight.getAirlineCode());
-        int flightCounter = checkFlightCountInADay(flight,flightList);
-        if(flightCounter<3){
+        checkAirlineAndAirport(flight.getAirlineCode()
+                ,flight.getSourceAirportCode()
+                ,flight.getDestinationAirportCode());
+        List<Flight> flightList = iFlightDao.customFindAllByDestCodeAndSourceCodeAndAirlineCode(
+                flight.getDestinationAirportCode()
+                ,flight.getSourceAirportCode()
+                ,flight.getAirlineCode()
+                ,flight.getFlightDate());
+        // when user update a flight,we should ignore flight that we are updating in that day.
+        for(int i =0;i<flightList.size();i++){
+            if(flightList.get(i).getId() ==flight.getId()){
+                flightList.remove(flightList.get(i));
+            }
+        }
+        if(flightList.size()<3){
             Flight savedflight = iFlightDao.save(flight);
             if(savedflight.getId()!=null){
-                return ResponseHelper.getSuccessResponse(flight, ServiceMessage.INSERT_SUCCESS);
+                return ResponseHelper.getSuccessResponse(FlightRequestBinder.convertToDto(savedflight), ServiceMessage.INSERT_SUCCESS);
 
             }else{
-                return ResponseHelper.getSuccessResponse("??",ServiceMessage.INSERT_FAILED);
+                throw new DataIntegrityViolationException("Something wrong with persistance layer when writing/updating into database.");
             }
 
         }
-        return null;
+        throw  new DailyFlightAlreadyFullException( flight.getFlightDate()
+                ,flight.getAirlineCode()
+                ,flight.getSourceAirportCode()
+                ,flight.getDestinationAirportCode());
     }
 
     @Override
     public ResponseEntity<BaseResponseVO> deleteFlight(Long flightId) {
-        return null;
+        iFlightDao.deleteById(flightId);
+        if(!iFlightDao.existsById(flightId)){
+            return ResponseHelper.getSuccessResponse("Delete successful", ServiceMessage.DELETE_SUCCESS);
+        }else{
+            throw new EntityNotFoundException(Flight.class,"flightId",flightId.toString());
+
+        }
     }
 
     @Override
@@ -86,7 +136,7 @@ public class FlightService implements IFlightService {
         if(flight !=null){
             return ResponseHelper.getSuccessResponse(flight, ServiceMessage.GET_SUCCESS);
         }else{
-            return ResponseHelper.getSuccessResponse("flight not found",ServiceMessage.GET_FAILED);
+            throw new EntityNotFoundException(Flight.class,"flightId",flightId.toString());
         }
     }
 
@@ -94,9 +144,13 @@ public class FlightService implements IFlightService {
     public ResponseEntity<BaseResponseVO> getFlightList() {
         ArrayList<Flight> airlineArrayList = iFlightDao.findAll();
         if(!airlineArrayList.isEmpty()){
-            return ResponseHelper.getSuccessResponse(airlineArrayList, ServiceMessage.GET_SUCCESS);
+            ArrayList<FlightResponseDto> flightResponseDtos = new ArrayList<>();
+            airlineArrayList.forEach(flight -> {
+                flightResponseDtos.add(FlightRequestBinder.convertToDto(flight));
+            });
+            return ResponseHelper.getSuccessResponse(flightResponseDtos, ServiceMessage.GET_SUCCESS);
         }else{
-            return ResponseHelper.getSuccessResponse(ServiceMessage.GET_FAILED);
+            throw new EntityNotFoundException(Flight.class);
         }
     }
 }

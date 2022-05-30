@@ -10,7 +10,12 @@ public class EntityNotFoundException extends RuntimeException{
     public EntityNotFoundException(Class clazz, String... searchParamsMap) {
         super(EntityNotFoundException.generateMessage(clazz.getSimpleName(), toMap(String.class, String.class, searchParamsMap)));
     }
-
+    public EntityNotFoundException(Class clazz){
+        super(EntityNotFoundException.generateMessage(clazz.getSimpleName()));
+    }
+    private static String generateMessage(String entity){
+        return StringUtils.capitalize(entity) +" was not found.";
+    }
     private static String generateMessage(String entity, Map<String, String> searchParams) {
         return StringUtils.capitalize(entity) +
                 " was not found for parameters " +

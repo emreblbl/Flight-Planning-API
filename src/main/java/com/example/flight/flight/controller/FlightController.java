@@ -1,8 +1,8 @@
 package com.example.flight.flight.controller;
 
 import com.example.flight.base.model.BaseResponseVO;
-import com.example.flight.flight.entity.Flight;
-import com.example.flight.flight.model.FlightRequestVO;
+import com.example.flight.flight.model.request.FlightInsertRequestVO;
+import com.example.flight.flight.model.request.FlightUpdateRequestVO;
 import com.example.flight.flight.service.IFlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,12 @@ public class FlightController {
         this.iFlightService =iFlightService;
     }
     @PostMapping("")
-    public ResponseEntity<BaseResponseVO> insertFlight(@Valid @RequestBody Flight flight){
+    public ResponseEntity<BaseResponseVO> insertFlight(@Valid @RequestBody FlightInsertRequestVO flight){
         return iFlightService.insertFlight(flight);
     }
     @PutMapping("")
-    public ResponseEntity<BaseResponseVO> updateFlight(@Valid @RequestBody FlightRequestVO flightRequestVO){
-        return iFlightService.updateFlight(flightRequestVO);
+    public ResponseEntity<BaseResponseVO> updateFlight(@Valid @RequestBody FlightUpdateRequestVO flightUpdateRequestVO){
+        return iFlightService.updateFlight(flightUpdateRequestVO);
     }
     @DeleteMapping("/{flightId}")
     public ResponseEntity<BaseResponseVO> deleteFlight(@PathVariable Long flightId){
