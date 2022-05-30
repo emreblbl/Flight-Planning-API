@@ -55,7 +55,7 @@ There are three entities respectively described below :
    ```
   -  **Response** : 
  ![Swagger POST](./image/404NotReadable.png)
- - **Response Code :422,UNPROCESSABLE_ENTITY** (application/json) 
+ - **Response Code :200** (application/json) (Business Logic failed example)
    - When we send a post flight request with date that already full for creating flight in airline between two destination
    - **Request** :
   ```
@@ -70,6 +70,6 @@ There are three entities respectively described below :
   - Database :
   ![Swagger POST](./image/flightDb.png)
   - Response :
-  ![Swagger POST](./image/422status.png)
+  ![Swagger POST](./image/200businessLogic.png)
  
 
