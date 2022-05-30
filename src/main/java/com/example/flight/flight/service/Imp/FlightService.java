@@ -108,7 +108,7 @@ public class FlightService implements IFlightService {
         if(flightList.size()<3){
             Flight savedflight = iFlightDao.save(flight);
             if(savedflight.getId()!=null){
-                return ResponseHelper.getSuccessResponse(FlightRequestBinder.convertToDto(savedflight), ServiceMessage.INSERT_SUCCESS);
+                return ResponseHelper.getSuccessResponse(FlightRequestBinder.convertToDto(savedflight), ServiceMessage.UPDATE_SUCCESS);
 
             }else{
                 throw new DataIntegrityViolationException("Something wrong with persistance layer when writing/updating into database.");
@@ -121,7 +121,7 @@ public class FlightService implements IFlightService {
                 flight.getAirlineCode()
                 ,flight.getFlightDate().toString()
                 ,flight.getSourceAirportCode()
-                ,flight.getDestinationAirportCode()),ServiceMessage.INSERT_FAILED);
+                ,flight.getDestinationAirportCode()),ServiceMessage.UPDATE_FAILED);
 
 
     }
