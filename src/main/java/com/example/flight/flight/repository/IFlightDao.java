@@ -12,11 +12,14 @@ import java.util.List;
 
 @Repository
 public interface IFlightDao extends CrudRepository<Flight,Long> {
-    @Query(" select f from Flight f where (f.destinationAirportCode = :sourceAirportCode" +
+    @Query(" select f from Flight f where ((f.destinationAirportCode = :sourceAirportCode" +
             " and f.sourceAirportCode = :destinationAirportCode) " +
             "or (f.destinationAirportCode = :destinationAirportCode" +
-            " and f.sourceAirportCode = :sourceAirportCode) " +
+            " and f.sourceAirportCode = :sourceAirportCode)) " +
             "and (f.airlineCode = :airlineCode) and (f.flightDate=:date)")
-    List<Flight> customFindAllByDestCodeAndSourceCodeAndAirlineCode(@Param("destinationAirportCode")String destCode, @Param("sourceAirportCode")String sourceCode, @Param("airlineCode")String airlineCode, LocalDate date);
+    List<Flight> customFindAllByDestCodeAndSourceCodeAndAirlineCode(@Param("destinationAirportCode")String destCode
+            , @Param("sourceAirportCode")String sourceCode
+            , @Param("airlineCode")String airlineCode
+            , LocalDate date);
     ArrayList<Flight> findAll();
 }

@@ -103,6 +103,7 @@ public class FlightService implements IFlightService {
         for(int i =0;i<flightList.size();i++){
             if(flightList.get(i).getId() == flight.getId()){
                 flightList.remove(flightList.get(i));
+                break;
             }
         }
         if(flightList.size()<3){
