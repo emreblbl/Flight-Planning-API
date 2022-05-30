@@ -55,7 +55,7 @@ There are three entities respectively described below :
    ```
   -  **Response** : 
  ![Swagger POST](./image/404NotReadable.png)
- - **Response Code :200** (application/json) (Business Logic failed example)
+ - **Response Code :200**, POST Request, (application/json) (Business Logic failed example)
    - When we send a post flight request with date that already full for creating flight in airline between two destination
    - **Request** :
   ```
