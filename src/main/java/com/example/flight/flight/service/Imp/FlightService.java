@@ -98,7 +98,7 @@ public class FlightService implements IFlightService {
                 ,flight.getFlightDate());
         // when user update a flight,we should ignore flight that we are updating in that day.
         for(int i =0;i<flightList.size();i++){
-            if(flightList.get(i).getId() ==flight.getId()){
+            if(flightList.get(i).getId() == flight.getId()){
                 flightList.remove(flightList.get(i));
             }
         }

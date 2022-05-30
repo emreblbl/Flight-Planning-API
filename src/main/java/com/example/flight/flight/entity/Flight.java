@@ -16,7 +16,6 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Flight {
-
     @Id
     @GeneratedValue
     private Long id;
@@ -31,16 +30,4 @@ public class Flight {
     private Date updateAt;
     @Version
     private Long version;
-    public Flight(Long id,String airlineCode,String sourceAirportCode,String destinationAirportCode,LocalDate flightDate,LocalTime flightTime){
-        this.id = id;
-        this.airlineCode=airlineCode;
-        this.sourceAirportCode=sourceAirportCode;
-        this.destinationAirportCode=destinationAirportCode;
-        this.flightDate=flightDate;
-        this.flightTime=flightTime;
-    }
-
-
-
-
 }
