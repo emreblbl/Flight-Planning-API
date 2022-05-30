@@ -60,10 +60,13 @@ public class FlightService implements IFlightService {
             }
 
         }else{
-            throw  new DailyFlightAlreadyFullException( flight.getFlightDate()
-                    ,flight.getAirlineCode()
+            return ResponseHelper.getSuccessResponse(String.format("%s airline firm already complete " +
+                            "daily flight in %s between %s and %s "
+                                    +"Please change date for flight.",
+                     flight.getAirlineCode()
+                    ,flight.getFlightDate().toString()
                     ,flight.getSourceAirportCode()
-                    ,flight.getDestinationAirportCode());
+                    ,flight.getDestinationAirportCode()),ServiceMessage.INSERT_FAILED);
         }
     }
     private void checkAirlineAndAirport(String airlineCode, String sourceAirportCode, String destinationAirportCode){
@@ -112,10 +115,15 @@ public class FlightService implements IFlightService {
             }
 
         }
-        throw  new DailyFlightAlreadyFullException( flight.getFlightDate()
-                ,flight.getAirlineCode()
+        return ResponseHelper.getSuccessResponse(String.format("%s airline firm already complete " +
+                        "daily flight in %s between %s and %s "
+                        +"Please change date for flight.",
+                flight.getAirlineCode()
+                ,flight.getFlightDate().toString()
                 ,flight.getSourceAirportCode()
-                ,flight.getDestinationAirportCode());
+                ,flight.getDestinationAirportCode()),ServiceMessage.INSERT_FAILED);
+
+
     }
 
     @Override
