@@ -6,8 +6,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Data
@@ -25,9 +25,9 @@ public class Flight {
     private LocalDate flightDate;
     private LocalTime flightTime;
     @CreationTimestamp
-    private Date createAt;
+    private LocalDateTime createAt;
     @UpdateTimestamp
-    private Date updateAt;
+    private LocalDateTime updateAt;
     @Version
     private Long version;
 }

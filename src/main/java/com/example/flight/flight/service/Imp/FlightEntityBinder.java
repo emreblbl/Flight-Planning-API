@@ -5,7 +5,7 @@ import com.example.flight.flight.model.request.FlightInsertRequestVO;
 import com.example.flight.flight.model.request.FlightUpdateRequestVO;
 import com.example.flight.flight.model.response.FlightResponseDto;
 
-public class FlightRequestBinder {
+public class FlightEntityBinder {
 
     public static final void setFlightRequestVOOnEntity(FlightUpdateRequestVO flightUpdateRequestVO, Flight flight){
         flight.setFlightDate(flightUpdateRequestVO.getFlightDate());

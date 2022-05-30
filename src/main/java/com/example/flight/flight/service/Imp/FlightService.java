@@ -4,7 +4,6 @@ import com.example.flight.airline.entity.Airline;
 import com.example.flight.airline.repository.IAirlineDao;
 import com.example.flight.airport.entity.Airport;
 import com.example.flight.airport.repository.IAirportDao;
-import com.example.flight.base.exception.DailyFlightAlreadyFullException;
 import com.example.flight.base.exception.EntityNotFoundException;
 import com.example.flight.base.model.BaseResponseVO;
 import com.example.flight.base.model.ServiceMessage;
@@ -39,7 +38,7 @@ public class FlightService implements IFlightService {
     }
     @Override
     public ResponseEntity<BaseResponseVO> insertFlight(FlightInsertRequestVO flightInsertRequestVO) {
-        Flight flight = FlightRequestBinder.convertRequestVOToEntity(flightInsertRequestVO);
+        Flight flight = FlightEntityBinder.convertRequestVOToEntity(flightInsertRequestVO);
         checkAirlineAndAirport(
                 flight.getAirlineCode()
                 ,flight.getSourceAirportCode()
@@ -52,7 +51,7 @@ public class FlightService implements IFlightService {
         if(flightList.size()<3){
             flight = iFlightDao.save(flight);
             if(flight.getId()!=null){
-                FlightResponseDto flightResponseDto= FlightRequestBinder.convertToDto(flight);
+                FlightResponseDto flightResponseDto= FlightEntityBinder.convertToDto(flight);
                 return ResponseHelper.getSuccessResponse(flightResponseDto, ServiceMessage.INSERT_SUCCESS);
 
             }else{
@@ -87,7 +86,7 @@ public class FlightService implements IFlightService {
         Optional<Flight> flightOptional = iFlightDao.findById(flightUpdateRequestVO.getId());
         Flight flight = flightOptional.isPresent() == true ? flightOptional.get() :null;
         if(flight !=null){
-            FlightRequestBinder.setFlightRequestVOOnEntity(flightUpdateRequestVO,flight);
+            FlightEntityBinder.setFlightRequestVOOnEntity(flightUpdateRequestVO,flight);
         }else{
             throw new EntityNotFoundException(Flight.class,"flight Id",flightUpdateRequestVO.getId().toString());
         }
@@ -109,7 +108,7 @@ public class FlightService implements IFlightService {
         if(flightList.size()<3){
             Flight savedflight = iFlightDao.save(flight);
             if(savedflight.getId()!=null){
-                return ResponseHelper.getSuccessResponse(FlightRequestBinder.convertToDto(savedflight), ServiceMessage.UPDATE_SUCCESS);
+                return ResponseHelper.getSuccessResponse(FlightEntityBinder.convertToDto(savedflight), ServiceMessage.UPDATE_SUCCESS);
 
             }else{
                 throw new DataIntegrityViolationException("Something wrong with persistance layer when writing/updating into database.");
@@ -155,7 +154,7 @@ public class FlightService implements IFlightService {
         if(!airlineArrayList.isEmpty()){
             ArrayList<FlightResponseDto> flightResponseDtos = new ArrayList<>();
             airlineArrayList.forEach(flight -> {
-                flightResponseDtos.add(FlightRequestBinder.convertToDto(flight));
+                flightResponseDtos.add(FlightEntityBinder.convertToDto(flight));
             });
             return ResponseHelper.getSuccessResponse(flightResponseDtos, ServiceMessage.GET_SUCCESS);
         }else{
