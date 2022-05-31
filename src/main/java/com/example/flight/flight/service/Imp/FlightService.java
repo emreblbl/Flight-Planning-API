@@ -18,14 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
+@Transactional(readOnly = true)
 public class FlightService implements IFlightService {
     private final IFlightDao iFlightDao;
     private final IAirlineDao iAirlineDao;
@@ -37,6 +38,7 @@ public class FlightService implements IFlightService {
         this.iAirportDao =iAirportDao;
     }
     @Override
+    @Transactional
     public ResponseEntity<BaseResponseVO> insertFlight(FlightInsertRequestVO flightInsertRequestVO) {
         Flight flight = FlightEntityBinder.convertRequestVOToEntity(flightInsertRequestVO);
         checkAirlineAndAirport(
@@ -82,6 +84,7 @@ public class FlightService implements IFlightService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<BaseResponseVO> updateFlight(FlightUpdateRequestVO flightUpdateRequestVO) {
         Optional<Flight> flightOptional = iFlightDao.findById(flightUpdateRequestVO.getId());
         Flight flight = flightOptional.isPresent() == true ? flightOptional.get() :null;
@@ -127,6 +130,7 @@ public class FlightService implements IFlightService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<BaseResponseVO> deleteFlight(Long flightId) {
         iFlightDao.deleteById(flightId);
         if(!iFlightDao.existsById(flightId)){
@@ -142,7 +146,7 @@ public class FlightService implements IFlightService {
         Optional<Flight> flightOptional = iFlightDao.findById(flightId);
         Flight flight = flightOptional.isPresent() == true ? flightOptional.get() :null;
         if(flight !=null){
-            return ResponseHelper.getSuccessResponse(flight, ServiceMessage.GET_SUCCESS);
+            return ResponseHelper.getSuccessResponse(FlightEntityBinder.convertToDto(flight), ServiceMessage.GET_SUCCESS);
         }else{
             throw new EntityNotFoundException(Flight.class,"flightId",flightId.toString());
         }

@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -4,15 +4,16 @@ package com.example.flight.flight.model.request;
 import com.example.flight.base.constant.DateAndTimeFormatConstant;
 import com.example.flight.base.constant.ValidationMessageConstant;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
-@Data
+import java.util.UUID;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode
 public class FlightUpdateRequestVO {

@@ -5,6 +5,7 @@ import com.example.flight.flight.model.request.FlightInsertRequestVO;
 import com.example.flight.flight.model.request.FlightUpdateRequestVO;
 import org.springframework.http.ResponseEntity;
 
+import java.util.UUID;
 
 
 public interface IFlightService {

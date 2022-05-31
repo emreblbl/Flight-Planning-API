@@ -1,7 +1,6 @@
 package com.example.flight.airport.entity;
-import com.example.flight.base.constant.DateAndTimeFormatConstant;
+import com.example.flight.base.constant.KeyHelperConstant;
 import com.example.flight.base.constant.ValidationMessageConstant;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +18,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class Airport {
     @Id
-    @GeneratedValue(generator = DateAndTimeFormatConstant.UUID_STRATEGY)
-    @GenericGenerator(name = DateAndTimeFormatConstant.UUID_STRATEGY, strategy = DateAndTimeFormatConstant.UUID_STRATEGY)
+    @GeneratedValue(generator = KeyHelperConstant.UUID_STRATEGY)
+    @GenericGenerator(name = KeyHelperConstant.UUID_STRATEGY, strategy = KeyHelperConstant.UUID_STRATEGY)
     private String id;
     @NotBlank(message = ValidationMessageConstant.AIRPORT_NAME_MANDATORY_MESSAGE)
     private String airportName;

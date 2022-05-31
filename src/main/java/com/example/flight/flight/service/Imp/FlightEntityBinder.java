@@ -23,7 +23,7 @@ public class FlightEntityBinder {
         return flight;
     }
     public static final FlightResponseDto convertToDto(Flight flight){
-        FlightResponseDto flightResponseDto = FlightResponseDto.builder()
+        FlightResponseDto flightResponseDto = FlightResponseDto.builder().id(flight.getId())
                 .airlineCode(flight.getAirlineCode())
                 .sourceAirportCode(flight.getSourceAirportCode())
                 .destinationAirportCode(flight.getDestinationAirportCode())
