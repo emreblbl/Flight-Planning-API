@@ -15,7 +15,6 @@ import com.example.flight.flight.model.response.FlightResponseDto;
 import com.example.flight.flight.repository.IFlightDao;
 import com.example.flight.flight.service.IFlightService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,14 +51,7 @@ public class FlightService implements IFlightService {
                 ,flight.getFlightDate());
         if(flightList.size()<3){
             flight = iFlightDao.save(flight);
-            if(flight.getId()!=null){
-                FlightResponseDto flightResponseDto= FlightEntityBinder.convertToDto(flight);
-                return ResponseHelper.getSuccessResponse(flightResponseDto, ServiceMessage.INSERT_SUCCESS);
-
-            }else{
-                throw new DataIntegrityViolationException("Something wrong with persistance layer when writing/updating into database.");
-            }
-
+            return ResponseHelper.getSuccessResponse(FlightEntityBinder.convertToDto(flight), ServiceMessage.INSERT_SUCCESS);
         }else{
             return ResponseHelper.getSuccessResponse(String.format("%s airline firm already complete " +
                             "daily flight in %s between %s and %s "
@@ -110,13 +102,7 @@ public class FlightService implements IFlightService {
         }
         if(flightList.size()<3){
             Flight savedflight = iFlightDao.save(flight);
-            if(savedflight.getId()!=null){
-                return ResponseHelper.getSuccessResponse(FlightEntityBinder.convertToDto(savedflight), ServiceMessage.UPDATE_SUCCESS);
-
-            }else{
-                throw new DataIntegrityViolationException("Something wrong with persistance layer when writing/updating into database.");
-            }
-
+            return ResponseHelper.getSuccessResponse(FlightEntityBinder.convertToDto(savedflight), ServiceMessage.UPDATE_SUCCESS);
         }
         return ResponseHelper.getSuccessResponse(String.format("%s airline firm already complete " +
                         "daily flight in %s between %s and %s "
