@@ -23,7 +23,7 @@ public class Airline {
     @GeneratedValue
     @JsonIgnore
     private Long id;
-    @NotBlank(message = "airline name is mandotary")
+    @NotBlank(message = ValidationMessageConstant.AIRLINE_NAME_MANDATORY_MESSAGE)
     private String airlineName;
     @NotNull
     @Size(min = 2,max = 2,message = ValidationMessageConstant.AIRLINE_MANDATORY_MESSAGE)

@@ -4,10 +4,6 @@ import com.example.flight.base.model.BaseResponseVO;
 import com.example.flight.flight.model.request.FlightInsertRequestVO;
 import com.example.flight.flight.model.request.FlightUpdateRequestVO;
 import org.springframework.http.ResponseEntity;
-
-import java.util.UUID;
-
-
 public interface IFlightService {
     ResponseEntity<BaseResponseVO> updateFlight(FlightUpdateRequestVO flightUpdateRequestVO);
     ResponseEntity<BaseResponseVO> insertFlight(FlightInsertRequestVO flightInsertRequestVO);
