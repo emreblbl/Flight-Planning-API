@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Service
@@ -69,8 +68,8 @@ public class FlightService implements IFlightService {
         ArrayList<String> airportCodeList = new ArrayList<>();
         airportCodeList.add(sourceAirportCode);
         airportCodeList.add(destinationAirportCode);
-        List<Airport> airportList = iAirportDao.findAirportByAirportCode(airportCodeList);
-        if(airportList.size() !=2){
+        int countOfAirport = iAirportDao.findAirportByAirportCode(airportCodeList);
+        if(countOfAirport !=2){
             throw new EntityNotFoundException(Airport.class,"airportCode",sourceAirportCode.concat(" or "+destinationAirportCode));
         }
     }
@@ -81,7 +80,7 @@ public class FlightService implements IFlightService {
         Optional<Flight> flightOptional = iFlightDao.findById(flightUpdateRequestVO.getId());
         Flight flight = flightOptional.isPresent() == true ? flightOptional.get() :null;
         if(flight !=null){
-            FlightEntityBinder.setFlightRequestVOOnEntity(flightUpdateRequestVO,flight);
+            FlightEntityBinder.updateEntityFromUpdateRequestVO(flightUpdateRequestVO,flight);
         }else{
             throw new EntityNotFoundException(Flight.class,"flight Id",flightUpdateRequestVO.getId().toString());
         }
@@ -118,9 +117,10 @@ public class FlightService implements IFlightService {
     @Override
     @Transactional
     public ResponseEntity<BaseResponseVO> deleteFlight(Long flightId) {
-        iFlightDao.deleteById(flightId);
-        if(!iFlightDao.existsById(flightId)){
-            return ResponseHelper.getSuccessResponse("Delete successful", ServiceMessage.DELETE_SUCCESS);
+        if(iFlightDao.existsById(flightId)){
+            iFlightDao.deleteById(flightId);
+            return ResponseHelper.getSuccessResponse(String.format("Delete successful for {id : %s} ",flightId)
+                    , ServiceMessage.DELETE_SUCCESS);
         }else{
             throw new EntityNotFoundException(Flight.class,"flightId",flightId.toString());
 

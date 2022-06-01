@@ -87,7 +87,7 @@ class FlightServiceTest {
                         , ServiceMessage.INSERT_SUCCESS);
 
         // pre-condition :
-        when(iAirportDao.findAirportByAirportCode(arrayList)).thenReturn(airportList);
+        when(iAirportDao.findAirportByAirportCode(arrayList)).thenReturn(2);
         when(iFlightDao.customFindAllByDestCodeAndSourceCodeAndAirlineCode(
                 flightInsertRequestVO.getDestinationAirportCode(),
                 flightInsertRequestVO.getSourceAirportCode()

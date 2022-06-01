@@ -30,6 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 @Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex, HttpHeaders headers,

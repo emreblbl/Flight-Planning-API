@@ -13,9 +13,9 @@ import java.util.Optional;
 public interface IAirportDao extends CrudRepository<Airport,Integer> {
     Optional<Airport> findByAirportCode(String airportCode);
     Optional<Airport> deleteByAirportCode(String airportCode);
-    @Query(value = "SELECT a from Airport a where " +
+    @Query(value = "SELECT COUNT (a) from Airport a where " +
             "a.airportCode IN (:airportCodes)")
-    List<Airport> findAirportByAirportCode(@Param("airportCodes") List<String> airportCodes);
+    int findAirportByAirportCode(@Param("airportCodes") List<String> airportCodes);
 
 
 }
