@@ -1,0 +1,13 @@
+version: '1.0'
+
+services:
+  flight-planning-api:
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    networks:
+      - main
+networks:
+  main:
+    name: turkish_main
